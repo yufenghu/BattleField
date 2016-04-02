@@ -9,8 +9,10 @@ public class InfantryActions : MonoBehaviour {
 	private string thistag;
 	private GameObject enemy;
 	private Animator animator;
+	private Animation animation;
 	private static int rotationSpeed = 5;
-	private static float speed = 0.2f;
+//	private static float speed = 0.2f;
+	private Infantry infantry;
 
 	// Use this for initialization
 	void Start()
@@ -18,6 +20,8 @@ public class InfantryActions : MonoBehaviour {
 		thistag = this.tag;
 		enemy = null;
 		animator = GetComponent<Animator> ();
+		infantry = new Infantry ();
+	
 	}
 
 
@@ -64,13 +68,10 @@ public class InfantryActions : MonoBehaviour {
 	}
 		
 	void OnCollisionEnter( Collision other ) 
-	{	Debug.Log ("enter Collider0");
+	{	
 		if (!other.gameObject.CompareTag (thistag)) {
-			Debug.Log ("enter Collider1");
 			if (other.gameObject.Equals (enemy)) {
-				Debug.Log ("enter Collider2");
-				animator.SetBool ("Fight", true);	
-				animator.SetBool ("Walk", false);	
+				Attack ();
 			}
 		}
 	}
@@ -79,8 +80,7 @@ public class InfantryActions : MonoBehaviour {
 	{
 		if (!other.gameObject.CompareTag (thistag)) {
 			if (other.gameObject.Equals (enemy)) {
-				animator.SetBool ("Fight", true);	
-				animator.SetBool ("Walk", false);	
+				Attack ();
 			}
 		}
 	}
@@ -91,6 +91,7 @@ public class InfantryActions : MonoBehaviour {
 			if (other.gameObject.Equals (enemy)) {
 				animator.SetBool ("Fight", false);	
 				animator.SetBool ("Walk", true);	
+
 			}
 		}
 	}
@@ -120,7 +121,6 @@ public class InfantryActions : MonoBehaviour {
 
 	public void MoveHead()
 	{
-
 		Vector3 direction = new Vector3 (0, 0, 1);
 
 		direction.y = 0;
@@ -129,4 +129,21 @@ public class InfantryActions : MonoBehaviour {
 		Vector3 eulerAngles = new  Vector3(0,transform.eulerAngles.y, 0);
 		transform.eulerAngles = eulerAngles;
 	}
+
+	public void Attack()
+	{
+		animator.SetBool ("Fight", true);	
+		animator.SetBool ("Walk", false);
+		if (enemy)
+			this.SendMessage ("OnDecreaseBlood", enemy);
+		else
+			Debug.LogError ("No enenmy");
+	}
+
+	public void OnDecreaseBlood(GameObject enemy)
+	{
+		infantry.Blood = infantry.Blood - 10;
+		Debug.Log ("Blood: " + infantry.Blood);
+	}
+
 }

@@ -47,6 +47,7 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\CamDirection.cs" />
      <Compile Include="Assets\Scripts\DataClass.cs" />
+     <Compile Include="Assets\Scripts\Infantry.cs" />
      <Compile Include="Assets\Scripts\InfantryActions.cs" />
      <Compile Include="Assets\Scripts\InfantryActions_V1.cs" />
      <None Include="Assets\Characters\fantasy horde_Dwarfs\Shader\Compressed MaskedShader2sided 5-4 cut out.shader" />
