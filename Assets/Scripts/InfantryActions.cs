@@ -147,7 +147,7 @@ public class InfantryActions : MonoBehaviour {
 			object[] message = new object[2];
 			message [0] = enemy;  
 			message [1] = infantry.A;  
-			this.gameObject.SendMessage ("OnDecreaseBlood", message);
+			this.transform.parent.BroadcastMessage("OnDecreaseBlood", message);
 		}
 		else
 			Debug.LogError ("No enenmy");
