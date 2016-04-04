@@ -11,7 +11,7 @@ public class InfantryActions : MonoBehaviour {
 	private Animator animator;
 	private Animation animation;
 	private static int rotationSpeed = 5;
-//	private static float speed = 0.2f;
+	private bool BeginFight = false;
 	private Infantry infantry;
 
 	// Use this for initialization
@@ -24,6 +24,10 @@ public class InfantryActions : MonoBehaviour {
 	
 	}
 
+	void Update()
+	{
+		MyInvoke (infantry.Af);
+	}
 
 	void OnTriggerEnter( Collider other )
 	{	
@@ -71,7 +75,7 @@ public class InfantryActions : MonoBehaviour {
 	{	
 		if (!other.gameObject.CompareTag (thistag)) {
 			if (other.gameObject.Equals (enemy)) {
-				Attack ();
+				BeginFight = true;
 			}
 		}
 	}
@@ -80,7 +84,7 @@ public class InfantryActions : MonoBehaviour {
 	{
 		if (!other.gameObject.CompareTag (thistag)) {
 			if (other.gameObject.Equals (enemy)) {
-				Attack ();
+				BeginFight = true;
 			}
 		}
 	}
@@ -131,19 +135,48 @@ public class InfantryActions : MonoBehaviour {
 	}
 
 	public void Attack()
-	{
+	{	
+		
+		//Vector3 oldposition = this.transform.position;
 		animator.SetBool ("Fight", true);	
 		animator.SetBool ("Walk", false);
-		if (enemy)
-			this.SendMessage ("OnDecreaseBlood", enemy);
+		animator.Play ("Fight");
+
+		//this.transform.position = oldposition;
+		if (enemy) {
+			object[] message = new object[2];
+			message [0] = enemy;  
+			message [1] = infantry.A;  
+			this.gameObject.SendMessage ("OnDecreaseBlood", message);
+		}
 		else
 			Debug.LogError ("No enenmy");
 	}
 
-	public void OnDecreaseBlood(GameObject enemy)
+	public void OnDecreaseBlood(object[] obj)
+	{	
+		GameObject enemy=(GameObject)obj[0];
+		//Debug.Log ("Blood: " + infantry.Blood);
+		GameObject my = this.gameObject;
+		Debug.Log (my);
+		Debug.Log (enemy);
+		Debug.Log (my.Equals(enemy));
+
+
+		if (my.Equals (enemy)) {
+			infantry.Blood = infantry.Blood - (int)obj[1];
+			//Debug.Log ("Blood: " + infantry.Blood);
+			if(infantry.Blood<=0)
+				Destroy (this);
+			
+		}
+
+	}
+
+	public void MyInvoke(float time)
 	{
-		infantry.Blood = infantry.Blood - 10;
-		Debug.Log ("Blood: " + infantry.Blood);
+		if (BeginFight && !IsInvoking ("Attack"))
+			InvokeRepeating ("Attack", -time, time);
 	}
 
 }
